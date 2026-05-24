@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Encuesta de Satisfacción — Evento de Apertura · Cruz Roja CRC Norte de Santander</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --red:#C0392B;--red-d:#922B21;--red-l:#FADBD8;--red-ll:#FEF5F5;
+  --gray-d:#2C3E50;--gray-m:#5F6368;--gray-l:#F4F6F7;--gray-ll:#FAFAFA;
+  --white:#ffffff;--border:rgba(0,0,0,0.09);
+  --green:#1D9E75;--green-l:#E1F5EE;--green-d:#085041;
+  --amber:#BA7517;--amber-l:#FAEEDA;--amber-d:#633806;
+  --blue:#185FA5;--blue-l:#E6F1FB;--blue-d:#0C447C;
+  --text:#2C3E50;--text-s:#5F6368;
+  --bg:#F8F9FA;--bg2:#ffffff;
+  --radius:10px;--radius-lg:14px;
+  --shadow:0 2px 8px rgba(0,0,0,0.07);
+}
+body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.5;padding:24px}
+.db{max-width:1100px;margin:0 auto}
+
+/* TOP BAR */
+.top-bar{background:linear-gradient(135deg,#C0392B 0%,#922B21 100%);border-radius:var(--radius-lg);padding:20px 26px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;gap:16px;box-shadow:0 4px 16px rgba(192,57,43,0.25)}
+.top-left{display:flex;align-items:center;gap:16px}
+.logo-wrap{width:52px;height:52px;border-radius:50%;background:rgba(255,255,255,0.18);display:flex;align-items:center;justify-content:center;flex-shrink:0;position:relative}
+.logo-wrap::before,.logo-wrap::after{content:'';position:absolute;background:#fff;border-radius:2px}
+.logo-wrap::before{width:7px;height:26px}
+.logo-wrap::after{width:26px;height:7px}
+.top-title{color:#fff;font-size:17px;font-weight:600;line-height:1.3}
+.top-sub{color:rgba(255,255,255,0.78);font-size:12px;margin-top:3px}
+.top-right{text-align:right;flex-shrink:0}
+.top-tag{background:rgba(255,255,255,0.18);color:#fff;font-size:11px;padding:4px 12px;border-radius:20px;display:inline-block;backdrop-filter:blur(4px)}
+.top-date{color:rgba(255,255,255,0.7);font-size:11px;margin-top:6px}
+
+/* CEA BANNER */
+.cea-banner{background:var(--bg2);border-radius:var(--radius-lg);padding:16px 20px;margin-bottom:18px;border:.5px solid var(--border);box-shadow:var(--shadow);display:flex;align-items:flex-start;gap:14px}
+.cea-icon{width:40px;height:40px;border-radius:10px;background:var(--red-l);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px}
+.cea-title{font-size:13px;font-weight:700;color:var(--red-d);margin-bottom:4px}
+.cea-text{font-size:12px;color:var(--text-s);line-height:1.6}
+.cea-chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.chip{font-size:11px;padding:3px 10px;border-radius:12px;font-weight:600;display:flex;align-items:center;gap:5px}
+
+/* SECTION LABEL */
+.sec-label{font-size:10px;font-weight:700;color:var(--gray-m);text-transform:uppercase;letter-spacing:.07em;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.sec-label::after{content:'';flex:1;height:.5px;background:var(--border)}
+
+/* KPI GRID */
+.kpi4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+.kpi{background:var(--bg2);border-radius:var(--radius-lg);padding:16px;position:relative;overflow:hidden;border:.5px solid var(--border);box-shadow:var(--shadow);cursor:pointer;transition:transform .2s,box-shadow .2s}
+.kpi:hover{transform:translateY(-3px);box-shadow:0 6px 20px rgba(0,0,0,0.1)}
+.kpi-accent{position:absolute;top:0;left:0;width:4px;height:100%;border-radius:2px 0 0 2px}
+.kpi-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}
+.kpi-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px}
+.kpi-badge{font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px}
+.kpi-val{font-size:30px;font-weight:700;line-height:1;margin-bottom:4px}
+.kpi-lbl{font-size:11px;color:var(--text-s);line-height:1.4}
+.kpi-meta{font-size:11px;font-weight:600;margin-top:8px;display:flex;align-items:center;gap:4px}
+
+/* PILARES CEA */
+.pilares{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
+.pilar{background:var(--bg2);border-radius:var(--radius-lg);padding:16px 18px;border:.5px solid var(--border);box-shadow:var(--shadow);position:relative;overflow:hidden;cursor:pointer;transition:transform .2s,box-shadow .2s}
+.pilar:hover{transform:translateY(-3px);box-shadow:0 6px 20px rgba(0,0,0,0.1)}
+.pilar-num{position:absolute;top:-8px;right:-8px;width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;opacity:.12}
+.pilar-tag{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
+.pilar-val{font-size:32px;font-weight:700;line-height:1;margin-bottom:5px}
+.pilar-lbl{font-size:12px;font-weight:600;margin-bottom:4px}
+.pilar-desc{font-size:11px;color:var(--text-s);line-height:1.5}
+.pilar-bar{height:5px;border-radius:3px;background:var(--gray-l);margin-top:12px;overflow:hidden}
+.pilar-bar-fill{height:100%;border-radius:3px}
+
+/* PREGUNTAS GRID */
+.preguntas{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px}
+.pq-card{background:var(--bg2);border-radius:var(--radius-lg);padding:16px 18px;border:.5px solid var(--border);box-shadow:var(--shadow);cursor:pointer;transition:all .2s}
+.pq-card:hover{box-shadow:0 6px 20px rgba(0,0,0,0.1)}
+.pq-card.active{border-color:var(--red);box-shadow:0 0 0 2px rgba(192,57,43,0.15)}
+.pq-header{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.pq-num{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
+.pq-title{font-size:12px;font-weight:600;color:var(--text);line-height:1.4;flex:1}
+.chart-wrap{position:relative;width:100%;height:160px}
+.pq-nota{font-size:11px;padding:7px 10px;border-radius:6px;margin-top:10px;line-height:1.5}
+
+/* TOOLTIP CARD */
+.tooltip-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:100;align-items:center;justify-content:center}
+.tooltip-overlay.show{display:flex}
+.tooltip-box{background:var(--bg2);border-radius:var(--radius-lg);padding:24px 28px;max-width:460px;width:90%;box-shadow:0 16px 48px rgba(0,0,0,0.18);position:relative}
+.tooltip-close{position:absolute;top:12px;right:14px;font-size:20px;cursor:pointer;color:var(--gray-m);background:none;border:none;font-family:inherit;line-height:1}
+.tooltip-title{font-size:15px;font-weight:700;color:var(--text);margin-bottom:6px}
+.tooltip-sub{font-size:12px;color:var(--text-s);margin-bottom:16px;line-height:1.5}
+.tooltip-stat{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:.5px solid var(--border)}
+.tooltip-stat:last-child{border-bottom:none}
+.tooltip-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.tooltip-lbl{font-size:12px;color:var(--text);flex:1}
+.tooltip-n{font-size:13px;font-weight:700}
+.tooltip-pct{font-size:12px;color:var(--text-s);width:40px;text-align:right}
+.tooltip-insight{margin-top:14px;padding:10px 13px;border-radius:8px;font-size:12px;line-height:1.6}
+
+/* HALLAZGOS */
+.hallazgos{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
+.hall-card{border-radius:var(--radius);padding:13px 16px;font-size:12px;line-height:1.6}
+.hall-ok{background:var(--green-l);border-left:4px solid var(--green);color:var(--green-d)}
+.hall-warn{background:var(--amber-l);border-left:4px solid var(--amber);color:var(--amber-d)}
+.hall-title{font-size:12px;font-weight:700;margin-bottom:4px;display:flex;align-items:center;gap:6px}
+
+/* FOOTER */
+.footer{border-top:.5px solid var(--border);padding-top:12px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+.footer p{font-size:11px;color:var(--text-s)}
+
+@media(max-width:700px){
+  .kpi4,.pilares{grid-template-columns:1fr 1fr}
+  .preguntas,.hallazgos{grid-template-columns:1fr}
+  .top-bar{flex-direction:column;align-items:flex-start}
+  .top-right{text-align:left}
+}
+</style>
+</head>
+<body>
+<div class="db">
+
+<!-- TOP BAR -->
+<div class="top-bar">
+  <div class="top-left">
+    <div class="logo-wrap"></div>
+    <div>
+      <div class="top-title">Encuesta de Satisfacción — Evento de Apertura</div>
+      <div class="top-sub">Mujeres Emprendedoras Cabeza de Familia · Proyecto Resiliencia y Recuperación · Catatumbo, Norte de Santander</div>
+    </div>
+  </div>
+  <div class="top-right">
+    <div class="top-tag">Enfoque CEA · Participación Comunitaria</div>
+    <div class="top-date">Abril 2026 · 99 respuestas · 100 asistentes</div>
+  </div>
+</div>
+
+<!-- CEA BANNER -->
+<div class="cea-banner">
+  <div class="cea-icon">🤝</div>
+  <div>
+    <div class="cea-title">Marco de evaluación — Compromiso y Responsabilidad con las Comunidades (CEA)</div>
+    <div class="cea-text">La encuesta mide el cumplimiento de los tres pilares CEA de la Cruz Roja Colombiana: acceso a información clara, participación activa y conocimiento de mecanismos de retroalimentación. Haz clic en cualquier tarjeta para ver el detalle.</div>
+    <div class="cea-chips">
+      <span class="chip" style="background:#FADBD8;color:#922B21">📋 Acceso a información</span>
+      <span class="chip" style="background:#E6F1FB;color:#0C447C">🗣 Participación activa</span>
+      <span class="chip" style="background:#E1F5EE;color:#085041">📡 Mecanismos de retroalimentación</span>
+    </div>
+  </div>
+</div>
+
+<!-- KPIs -->
+<div class="sec-label">Métricas clave del evento</div>
+<div class="kpi4">
+  <div class="kpi" onclick="openTooltip('asistencia')">
+    <div class="kpi-accent" style="background:#C0392B"></div>
+    <div class="kpi-top">
+      <div class="kpi-icon" style="background:#FADBD8">👩‍👩‍👧</div>
+      <span class="kpi-badge" style="background:#FADBD8;color:#922B21">4 grupos</span>
+    </div>
+    <div class="kpi-val" style="color:#C0392B">100</div>
+    <div class="kpi-lbl">Mujeres asistentes al evento de apertura</div>
+    <div class="kpi-meta" style="color:#C0392B">📋 99 respondieron · 99%</div>
+  </div>
+  <div class="kpi" onclick="openTooltip('satisfaccion')">
+    <div class="kpi-accent" style="background:#1D9E75"></div>
+    <div class="kpi-top">
+      <div class="kpi-icon" style="background:#E1F5EE">⭐</div>
+      <span class="kpi-badge" style="background:#E1F5EE;color:#085041">CEA P3</span>
+    </div>
+    <div class="kpi-val" style="color:#1D9E75">100%</div>
+    <div class="kpi-lbl">Satisfacción general con el evento</div>
+    <div class="kpi-meta" style="color:#1D9E75">✅ 88.9% muy satisfecha</div>
+  </div>
+  <div class="kpi" onclick="openTooltip('participacion')">
+    <div class="kpi-accent" style="background:#185FA5"></div>
+    <div class="kpi-top">
+      <div class="kpi-icon" style="background:#E6F1FB">🗣</div>
+      <span class="kpi-badge" style="background:#E6F1FB;color:#0C447C">CEA P2</span>
+    </div>
+    <div class="kpi-val" style="color:#185FA5">97.0%</div>
+    <div class="kpi-lbl">Sintió su participación valorada</div>
+    <div class="kpi-meta" style="color:#185FA5">✅ 93.9% totalmente</div>
+  </div>
+  <div class="kpi" onclick="openTooltip('contacto')">
+    <div class="kpi-accent" style="background:#1D9E75"></div>
+    <div class="kpi-top">
+      <div class="kpi-icon" style="background:#E1F5EE">📡</div>
+      <span class="kpi-badge" style="background:#E1F5EE;color:#085041">CEA P4</span>
+    </div>
+    <div class="kpi-val" style="color:#1D9E75">100%</div>
+    <div class="kpi-lbl">Conoce cómo contactar al equipo CRC</div>
+    <div class="kpi-meta" style="color:#BA7517">⚠ 7 con conocimiento parcial</div>
+  </div>
+</div>
+
+<!-- PILARES CEA -->
+<div class="sec-label">Resultados por pilar CEA</div>
+<div class="pilares">
+  <div class="pilar" onclick="openTooltip('pilar1')" style="border-color:#FADBD8">
+    <div class="pilar-num" style="color:#C0392B;background:#C0392B">1</div>
+    <div class="pilar-tag" style="color:#922B21">Pilar 1 — Acceso a información</div>
+    <div class="pilar-val" style="color:#1D9E75">100%</div>
+    <div class="pilar-lbl">Claridad de la información</div>
+    <div class="pilar-desc">El 100% de las participantes comprendió la información sobre el proyecto, sus objetivos y lo que pueden esperar de él.</div>
+    <div class="pilar-bar"><div class="pilar-bar-fill" style="width:100%;background:#1D9E75"></div></div>
+  </div>
+  <div class="pilar" onclick="openTooltip('pilar2')" style="border-color:#E6F1FB">
+    <div class="pilar-num" style="color:#185FA5;background:#185FA5">2</div>
+    <div class="pilar-tag" style="color:#0C447C">Pilar 2 — Participación activa</div>
+    <div class="pilar-val" style="color:#185FA5">97.0%</div>
+    <div class="pilar-lbl">Participación valorada</div>
+    <div class="pilar-desc">El 97.0% sintió que su participación y opinión fueron valoradas durante el encuentro de apertura.</div>
+    <div class="pilar-bar"><div class="pilar-bar-fill" style="width:97%;background:#185FA5"></div></div>
+  </div>
+  <div class="pilar" onclick="openTooltip('pilar3')" style="border-color:#E1F5EE">
+    <div class="pilar-num" style="color:#1D9E75;background:#1D9E75">3</div>
+    <div class="pilar-tag" style="color:#085041">Pilar 3 — Mecanismos de retroalimentación</div>
+    <div class="pilar-val" style="color:#1D9E75">100%</div>
+    <div class="pilar-lbl">Conoce canales de contacto CRC</div>
+    <div class="pilar-desc">El 100% conoce cómo comunicarse con el equipo, aunque el 8.1% de forma parcial — requiere refuerzo.</div>
+    <div class="pilar-bar"><div class="pilar-bar-fill" style="width:100%;background:#1D9E75"></div></div>
+  </div>
+</div>
+
+<!-- PREGUNTAS -->
+<div class="sec-label">Resultados por pregunta — Haz clic en cada tarjeta para ver el detalle</div>
+<div class="preguntas">
+  <div class="pq-card" id="pq1" onclick="toggleCard(1)">
+    <div class="pq-header">
+      <div class="pq-num" style="background:#FADBD8;color:#922B21">P1</div>
+      <div class="pq-title">¿Qué tan clara fue la información recibida sobre el proyecto?</div>
+    </div>
+    <div class="chart-wrap"><canvas id="cP1" role="img" aria-label="P1 claridad: Muy clara 75 (89.3%), Clara 9 (10.7%)">Muy clara: 75, Clara: 9.</canvas></div>
+    <div class="pq-nota" style="background:#E1F5EE;color:#085041">✅ 100% comprendió la información · 0 respuestas negativas</div>
+  </div>
+  <div class="pq-card" id="pq2" onclick="toggleCard(2)">
+    <div class="pq-header">
+      <div class="pq-num" style="background:#E6F1FB;color:#0C447C">P2</div>
+      <div class="pq-title">¿Sentiste que tu participación y opinión fueron valoradas?</div>
+    </div>
+    <div class="chart-wrap"><canvas id="cP2" role="img" aria-label="P2 participación: Sí totalmente 79 (94%), Sí en parte 3 (3.6%)">Sí totalmente: 79, Sí en parte: 3.</canvas></div>
+    <div class="pq-nota" style="background:#E1F5EE;color:#085041">✅ 97.0% respuesta positiva · 3 sin respuesta registrada</div>
+  </div>
+  <div class="pq-card" id="pq3" onclick="toggleCard(3)">
+    <div class="pq-header">
+      <div class="pq-num" style="background:#E1F5EE;color:#085041">P3</div>
+      <div class="pq-title">¿Qué tan satisfecha estás con el desarrollo del evento de apertura?</div>
+    </div>
+    <div class="chart-wrap"><canvas id="cP3" role="img" aria-label="P3 satisfacción: Muy satisfecha 74 (88.1%), Satisfecha 10 (11.9%)">Muy satisfecha: 74, Satisfecha: 10.</canvas></div>
+    <div class="pq-nota" style="background:#E1F5EE;color:#085041">✅ 100% satisfacción · 88.9% en el nivel más alto</div>
+  </div>
+  <div class="pq-card" id="pq4" onclick="toggleCard(4)">
+    <div class="pq-header">
+      <div class="pq-num" style="background:#FAEEDA;color:#633806">P4</div>
+      <div class="pq-title">¿Sabes cómo comunicarte con el equipo de Cruz Roja ante dudas o sugerencias?</div>
+    </div>
+    <div class="chart-wrap"><canvas id="cP4" role="img" aria-label="P4 contacto: Sí claramente 91 (91.9%), Más o menos 8 (8.1%)">Sí claramente: 91, Más o menos: 8.</canvas></div>
+    <div class="pq-nota" style="background:#FAEEDA;color:#633806">⚠ 7 mujeres con conocimiento parcial — reforzar en próxima sesión</div>
+  </div>
+</div>
+
+<!-- HALLAZGOS -->
+<div class="sec-label">Hallazgos y acciones de seguimiento CEA</div>
+<div class="hallazgos">
+  <div class="hall-card hall-ok">
+    <div class="hall-title">✅ Logros del evento</div>
+    El evento de apertura cumplió plenamente los estándares CEA. El 100% comprendió el proyecto, el 100% quedó satisfecha y el 100% conoce cómo contactar al equipo. La firma de compromisos fue bien recibida por los 4 grupos.
+  </div>
+  <div class="hall-card hall-ok">
+    <div class="hall-title">⭐ Indicador destacado</div>
+    El 88.9% eligió "Muy satisfecha" — el nivel más alto de la escala. El 93.9% sintió su participación "totalmente" valorada. Estos datos evidencian un evento de alta calidad con enfoque comunitario real.
+  </div>
+  <div class="hall-card hall-warn">
+    <div class="hall-title">⚠ Acción de seguimiento prioritaria</div>
+    8 mujeres (8.1%) conocen "más o menos" cómo contactar al equipo. Se recomienda reforzar los canales de comunicación (número de contacto, nombre del referente y horarios de atención) en la primera sesión de formación.
+  </div>
+  <div class="hall-card hall-warn">
+    <div class="hall-title">📋 Registro para la matriz PMER</div>
+    Registrar en la columna de observaciones del indicador RA.T.1: "99 de 100 participantes completaron encuesta CEA. Satisfacción 100%. Refuerzo de mecanismos de contacto programado para mes 1."
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <p>Cruz Roja Colombiana · Seccional Norte de Santander · Enfoque CEA · PMER 2026</p>
+  <p>KoboToolbox · n=99 · Evento de apertura · 4 grupos · 100 asistentes · Actualización 28/04/2026</p>
+</div>
+
+</div>
+
+<!-- TOOLTIP OVERLAY -->
+<div class="tooltip-overlay" id="overlay" onclick="closeTooltip(event)">
+  <div class="tooltip-box" id="tooltipBox">
+    <button class="tooltip-close" onclick="closeTooltipBtn()">✕</button>
+    <div class="tooltip-title" id="ttTitle"></div>
+    <div class="tooltip-sub" id="ttSub"></div>
+    <div id="ttStats"></div>
+    <div class="tooltip-insight" id="ttInsight"></div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const tc='#5F6368', gc='rgba(0,0,0,0.06)', bd='#ffffff';
+
+const tooltipData = {
+  asistencia: {
+    title:'Asistencia al evento de apertura',
+    sub:'100 mujeres distribuidas en 4 grupos participaron del evento. 99 completaron la encuesta de satisfacción.',
+    stats:[
+      {color:'#1D9E75',label:'Respondieron la encuesta',n:99,pct:'99.0%'},
+      {color:'#D3D1C7',label:'Sin respuesta registrada',n:1,pct:'1.0%'},
+    ],
+    insight:{bg:'#E1F5EE',color:'#085041',text:'Tasa de respuesta del 99% — prácticamente la totalidad de las participantes. Evidencia un compromiso activo con el proyecto desde el primer día.'}
+  },
+  satisfaccion: {
+    title:'P3 — Satisfacción con el evento de apertura',
+    sub:'Pregunta: ¿Qué tan satisfecha estás con el desarrollo del evento de apertura?',
+    stats:[
+      {color:'#1D9E75',label:'Muy satisfecha',n:88,pct:'88.9%'},
+      {color:'#378ADD',label:'Satisfecha',n:11,pct:'11.1%'},
+      {color:'#BA7517',label:'Poco satisfecha',n:0,pct:'0%'},
+      {color:'#C0392B',label:'Insatisfecha',n:0,pct:'0%'},
+    ],
+    insight:{bg:'#E1F5EE',color:'#085041',text:'100% de satisfacción — ninguna respuesta negativa. El 88.9% eligió la opción más alta de la escala. Resultado excepcional para un primer evento.'}
+  },
+  participacion: {
+    title:'P2 — Participación y opinión valorada',
+    sub:'Pregunta: ¿Sentiste que tu participación y opinión fueron valoradas durante el encuentro?',
+    stats:[
+      {color:'#185FA5',label:'Sí, totalmente',n:93,pct:'93.9%'},
+      {color:'#9FD0F5',label:'Sí, en parte',n:3,pct:'3.0%'},
+      {color:'#BA7517',label:'No mucho',n:0,pct:'0%'},
+      {color:'#C0392B',label:'No',n:0,pct:'0%'},
+    ],
+    insight:{bg:'#E6F1FB',color:'#0C447C',text:'97.0% de respuesta positiva. El enfoque participativo del evento fue percibido claramente por la comunidad — fortaleza CEA significativa.'}
+  },
+  contacto: {
+    title:'P4 — Conocimiento de mecanismos de contacto CRC',
+    sub:'Pregunta: ¿Sabes cómo puedes comunicarte con el equipo de Cruz Roja si tienes preguntas, dudas o sugerencias?',
+    stats:[
+      {color:'#1D9E75',label:'Sí, lo sé claramente',n:91,pct:'91.9%'},
+      {color:'#BA7517',label:'Más o menos',n:8,pct:'8.1%'},
+      {color:'#D85A30',label:'No me quedó claro',n:0,pct:'0%'},
+      {color:'#C0392B',label:'No',n:0,pct:'0%'},
+    ],
+    insight:{bg:'#FAEEDA',color:'#633806',text:'⚠ Acción requerida: 8 mujeres (8.1%) tienen conocimiento parcial de los canales de contacto. Reforzar en la primera sesión de formación con tarjeta informativa impresa.'}
+  },
+  pilar1: {
+    title:'Pilar CEA 1 — Acceso a información',
+    sub:'Mide si las participantes recibieron información clara, accesible y comprensible sobre el proyecto.',
+    stats:[
+      {color:'#1D9E75',label:'Muy clara',n:89,pct:'89.9%'},
+      {color:'#378ADD',label:'Clara',n:9,pct:'10.7%'},
+      {color:'#BA7517',label:'Poco clara',n:0,pct:'0%'},
+      {color:'#C0392B',label:'No la entendí',n:0,pct:'0%'},
+    ],
+    insight:{bg:'#E1F5EE',color:'#085041',text:'Cumplimiento total del Pilar 1. El 100% de las mujeres comprendió la información. La estrategia de comunicación del evento fue efectiva.'}
+  },
+  pilar2: {
+    title:'Pilar CEA 2 — Participación activa',
+    sub:'Mide si las participantes se sintieron parte activa del proceso y con capacidad de incidir en las decisiones.',
+    stats:[
+      {color:'#185FA5',label:'Sí, totalmente',n:93,pct:'93.9%'},
+      {color:'#9FD0F5',label:'Sí, en parte',n:3,pct:'3.0%'},
+      {color:'#BA7517',label:'No mucho',n:0,pct:'0%'},
+      {color:'#C0392B',label:'No',n:0,pct:'0%'},
+    ],
+    insight:{bg:'#E6F1FB',color:'#0C447C',text:'97.0% de cumplimiento del Pilar 2. Ligeramente por debajo del 100% — seguir fortaleciendo espacios de voz comunitaria en cada sesión del proyecto.'}
+  },
+  pilar3: {
+    title:'Pilar CEA 3 — Mecanismos de retroalimentación',
+    sub:'Mide si las participantes saben cómo dar retroalimentación, reportar quejas o hacer consultas al equipo CRC.',
+    stats:[
+      {color:'#1D9E75',label:'Sí, lo sé claramente',n:91,pct:'91.9%'},
+      {color:'#BA7517',label:'Más o menos (parcial)',n:8,pct:'8.1%'},
+      {color:'#D85A30',label:'No me quedó claro',n:0,pct:'0%'},
+      {color:'#C0392B',label:'No',n:0,pct:'0%'},
+    ],
+    insight:{bg:'#FAEEDA',color:'#633806',text:'Cumplimiento del 100% en conocimiento (91.9% pleno + 8.1% parcial). Acción: reforzar canales de contacto con las 8 mujeres que respondieron "más o menos".'}
+  }
+};
+
+function openTooltip(key) {
+  const d = tooltipData[key];
+  if(!d) return;
+  document.getElementById('ttTitle').textContent = d.title;
+  document.getElementById('ttSub').textContent = d.sub;
+  let statsHtml = '';
+  d.stats.forEach(s => {
+    statsHtml += `<div class="tooltip-stat">
+      <div class="tooltip-dot" style="background:${s.color}"></div>
+      <div class="tooltip-lbl">${s.label}</div>
+      <div class="tooltip-n" style="color:${s.color}">${s.n}</div>
+      <div class="tooltip-pct">${s.pct}</div>
+    </div>`;
+  });
+  document.getElementById('ttStats').innerHTML = statsHtml;
+  document.getElementById('ttInsight').style.background = d.insight.bg;
+  document.getElementById('ttInsight').style.color = d.insight.color;
+  document.getElementById('ttInsight').textContent = d.insight.text;
+  document.getElementById('overlay').classList.add('show');
+}
+
+function closeTooltip(e) {
+  if(e.target === document.getElementById('overlay')) closeTooltipBtn();
+}
+function closeTooltipBtn() {
+  document.getElementById('overlay').classList.remove('show');
+}
+
+function toggleCard(n) {
+  for(let i=1;i<=4;i++) document.getElementById('pq'+i).classList.remove('active');
+  document.getElementById('pq'+n).classList.add('active');
+}
+
+// CHARTS
+const defs = (extra={}) => ({
+  responsive: true, maintainAspectRatio: false,
+  plugins:{ legend:{display:false}, ...extra.plugins },
+  ...extra
+});
+
+// P1 - Donut
+new Chart(document.getElementById('cP1'), {
+  type:'doughnut',
+  data:{
+    labels:['Muy clara','Clara','Poco clara','No la entendí'],
+    datasets:[{data:[89,10,0,0],backgroundColor:['#1D9E75','#378ADD','#BA7517','#C0392B'],borderColor:bd,borderWidth:2}]
+  },
+  options:{...defs(),cutout:'65%',plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>` ${ctx.label}: ${ctx.raw} (${Math.round(ctx.raw/99*100)}%)`}}}}
+});
+
+// P2 - Donut
+new Chart(document.getElementById('cP2'), {
+  type:'doughnut',
+  data:{
+    labels:['Sí, totalmente','Sí, en parte','No mucho','No'],
+    datasets:[{data:[93,3,0,0],backgroundColor:['#185FA5','#9FD0F5','#BA7517','#C0392B'],borderColor:bd,borderWidth:2}]
+  },
+  options:{...defs(),cutout:'65%',plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>` ${ctx.label}: ${ctx.raw} (${Math.round(ctx.raw/99*100)}%)`}}}}
+});
+
+// P3 - Barras
+new Chart(document.getElementById('cP3'), {
+  type:'bar',
+  data:{
+    labels:['Muy satisfecha','Satisfecha','Poco satisfecha','Insatisfecha'],
+    datasets:[{data:[88,11,0,0],backgroundColor:['#1D9E75','#378ADD','#BA7517','#C0392B'],borderRadius:5,borderSkipped:false}]
+  },
+  options:{...defs({scales:{x:{ticks:{color:tc,font:{size:10},maxRotation:20},grid:{display:false}},y:{ticks:{color:tc,font:{size:10},stepSize:20},grid:{color:gc},beginAtZero:true}},plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>` ${ctx.raw} mujeres (${Math.round(ctx.raw/99*100)}%)`}}}})}
+});
+
+// P4 - Barras
+new Chart(document.getElementById('cP4'), {
+  type:'bar',
+  data:{
+    labels:['Sí, claramente','Más o menos','No me quedó claro','No'],
+    datasets:[{data:[91,8,0,0],backgroundColor:['#1D9E75','#BA7517','#D85A30','#C0392B'],borderRadius:5,borderSkipped:false}]
+  },
+  options:{...defs({scales:{x:{ticks:{color:tc,font:{size:10},maxRotation:20},grid:{display:false}},y:{ticks:{color:tc,font:{size:10},stepSize:20},grid:{color:gc},beginAtZero:true}},plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>` ${ctx.raw} mujeres (${Math.round(ctx.raw/99*100)}%)`}}}})}
+});
+</script>
+</body>
+</html>
